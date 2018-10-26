@@ -1,0 +1,18 @@
+---
+# tasks file for haproxy-roles
+- name: http
+  yum:
+    name: httpie
+    state: latest
+    
+- name: install HAProxy
+  yum:
+    name: haproxy 
+    state: latest
+  notify: enable_haproxy
+    
+- name: configure haproxy
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+notify: restart_haproxy

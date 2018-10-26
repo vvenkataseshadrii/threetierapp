@@ -1,0 +1,32 @@
+- name: configuration
+  hosts: all
+  gather_facts: false # remove later! speeds up testing
+  become: true
+
+  tasks:
+  - name: enable repos
+    template:
+      src: /root/bad-ansible/3tier-bad/open_three-tier-app.repo
+      dest: /etc/yum.repos.d/open_three-tier-app.repo
+      mode: 0644
+
+- name: Calling appsrole
+  hosts: apps
+  become: yes
+  gather_facts: true
+  roles:
+   - app-roles
+
+- name: Calling dbrole
+  hosts: appdbs
+  become: yes
+  gather_facts: true
+  roles:
+   - db-roles
+
+- name: callingHaProxy
+  hosts: frontends
+  gather_facts: false
+  become: yes
+  roles:
+   - haproxy-roles
